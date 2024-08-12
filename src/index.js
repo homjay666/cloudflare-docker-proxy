@@ -1,7 +1,6 @@
 import DOCS from './help.html'
- 
-// return docs
-if (url.pathname === "/") {
+
+function handleRootRequest() {
   return new Response(DOCS, {
     status: 200,
     headers: {
@@ -9,7 +8,6 @@ if (url.pathname === "/") {
     }
   });
 }
-
 
 addEventListener("fetch", (event) => {
   event.passThroughOnException();
@@ -45,6 +43,12 @@ function routeByHosts(host) {
 
 async function handleRequest(request) {
   const url = new URL(request.url);
+  
+  // Handle root path
+  if (url.pathname === "/") {
+    return handleRootRequest();
+  }
+
   const upstream = routeByHosts(url.hostname);
   if (upstream === "") {
     return new Response(
@@ -166,5 +170,3 @@ async function fetchToken(wwwAuthenticate, scope, authorization) {
   }
   return await fetch(url, { method: "GET", headers: headers });
 }
-
-
